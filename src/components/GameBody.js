@@ -1,16 +1,10 @@
+import { useContext } from "react";
+import { GameContext } from "../hooks/GameContext";
+
 export default function GameBody() {
 
-  const rows = 6;
-  const cols = 5;
-
-  const grid = [];
-
-  for(var i = 0; i < rows; i++){
-    grid.push([])
-    for(var j = 0; j < cols; j++) {
-      grid[i].push(`c${i+1}${j+1}`)
-    }
-  }
+  const [boardState] = useContext(GameContext)
+  let grid = boardState.matrix;
 
   return (
     <div className="w-full text-center flex justify-center">
@@ -19,8 +13,8 @@ export default function GameBody() {
             grid.map((row, i) => (
               <div className="flex flex-row justify-evenly align-middle mt-3" key={i}>
                 {
-                  row.map((col,i) => (
-                    <div className="bg-gray-50 border-2 w-12 h-12 text-3xl font-bold" key={col}>A</div>
+                  row.map((col, j) => (
+                    <input key={j} value={grid[i][j]} id={`c${i}${j}`} type="text" disabled={true} className="bg-gray-50 border-2 w-12 h-12 text-4xl font-bold text-center" />
                   ))
                 }
               </div>
