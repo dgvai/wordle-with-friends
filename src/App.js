@@ -1,5 +1,6 @@
-import Home from './pages/Home';
 import Create from './pages/Create';
+import Game from './pages/Game';
+import Home from './pages/Home';
 import Share from './pages/Share';
 
 import {
@@ -14,7 +15,7 @@ function App() {
       <Routes>
         <Route path="/create" element={<Create />} />
         <Route path="/share" element={<Share />} />
-        <Route path="/:gameId" />
+        <Route path="/:gameId" element={<Game />} />
         <Route path="/" element={<Home />} />
       </Routes>
     </Router>
