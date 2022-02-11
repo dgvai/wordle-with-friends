@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { GameProvider } from './hooks/GameContext';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBYuraQBnBk8T76PdXaKK4_b2fxaCMPnUo",
@@ -21,7 +22,9 @@ getAnalytics(app);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GameProvider>
+      <App />
+    </GameProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

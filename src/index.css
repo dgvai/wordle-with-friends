@@ -16,6 +16,7 @@ body > #root {
   background: #d3d6da;
   border-radius: 0.5rem;
   text-transform: uppercase;
+  transition: all;
 }
 
 @keyframes bounce {
@@ -43,5 +44,18 @@ body > #root {
   100% {
     transform: translateY(0);
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.custom-animate-drop {
+  animation: drop 0.5s 1;
+}
+
+@keyframes drop {
+  0% {
+    transform: scale(10);
+  }
+  100% {
+    transform: scale(1);
   }
 }

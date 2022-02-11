@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom';
 import { useContext, useEffect} from 'react';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { GameContext } from '../hooks/GameContext';
+import WinBoard from '../components/WinBoard';
+import LoseBoard from '../components/LoseBoard';
 
 export default function Game() {
 
   const {gameId} = useParams()
   const db = getFirestore();
-  const [boardState, setBoardState] = useContext(GameContext)
+  const {boardState, setBoardState, gameState} = useContext(GameContext)
 
   async function setGameData() {
     const gameDocRef = doc(db, "games", gameId)
@@ -33,21 +35,36 @@ export default function Game() {
 
     const prevBoardState = JSON.parse(localStorage.getItem('boardState'));
 
-    if(prevBoardState && prevBoardState.id === gameId) {
-      setBoardState(prevBoardState);
+    if(prevBoardState) {
+      if(prevBoardState.id === gameId) {
+        setBoardState(prevBoardState);
+      } else {
+        prevBoardState.id = gameId
+        setBoardState(prevBoardState)
+      }
     } else {
-      prevBoardState.id = gameId
-      setBoardState(prevBoardState)
+      setBoardState({...boardState, id: gameId})
     }
-
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('boardState', JSON.stringify(boardState))
+  })
+
+  function renderStatefulObject() {
+    switch(boardState.state) {
+      case 1: return <WinBoard />
+      case 2: return <LoseBoard />
+      default: return <Keyboard />
+    }
+  }
+
   return (
-  
-    <div className="container mx-auto max-w-md h-screen flex flex-col">
+
+    <div className="container mx-auto max-w-md h-screen flex flex-col overflow-hidden">
       <Header/>
       <GameBody />
-      <Keyboard />
+      {renderStatefulObject()}
     </div>
   )
 }
