@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { GameContext } from "../hooks/GameContext";
 import { Colors } from "../constants/colors";
+import { LetterState } from "../constants/games";
 
 export default function GameBody() {
 
@@ -10,9 +11,9 @@ export default function GameBody() {
   
   function getTileBGColor(row,col) {
     switch(solv[row][col]) {
-      case 1: return Colors.Matched;
-      case 2: return Colors.Misplaced;
-      case 3: return Colors.Wrong;
+      case LetterState.Correct : return Colors.Matched;
+      case LetterState.Misplaced : return Colors.Misplaced;
+      case LetterState.Wrong : return Colors.Wrong;
       default: return Colors.BlankTile;
     }
   }
@@ -25,11 +26,16 @@ export default function GameBody() {
     return (solv[row][col]) ? Colors.LightText : Colors.DarkText;
   }
 
+  function getTileAnimation(row) {
+    return (boardState.tempRow && boardState.tempRow == row) ? 'shake 0.5s 1' : '';
+  }
+
   function generateStyle(row,col) {
     return {
       backgroundColor: getTileBGColor(row,col),
       border: getTileBorder(row, col),
       color: getTileTextColor(row,col),
+      animation: getTileAnimation(row),
     }
   }
 
@@ -41,7 +47,7 @@ export default function GameBody() {
               <div className="flex flex-row justify-evenly align-middle mt-3" key={i}>
                 {
                   row.map((col, j) => (
-                    <input key={j} value={grid[i][j]} id={`c${i}${j}`} type="text" disabled={true} style={generateStyle(i,j)} className="w-12 h-12 text-4xl font-bold text-center transition-all" />
+                    <input key={j} value={grid[i][j]} type="text" disabled={true} style={generateStyle(i,j)} className="w-12 h-12 text-4xl font-bold text-center transition-all" />
                   ))
                 }
               </div>

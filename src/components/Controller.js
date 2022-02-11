@@ -1,17 +1,20 @@
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Colors } from '../constants/colors';
-import { GameContext } from './../hooks/GameContext';
+import { GameContext } from '../hooks/GameContext';
+import { GameStates, LetterState } from '../constants/games';
 
 export default function Keyboard() {
 
   const {boardState, setBoardState} = useContext(GameContext);
 
+  const [loading, setLoading] = useState(false)
+
   const rows = localStorage.getItem('currentGameRows') || 6;
   const cols = localStorage.getItem('currentGameCols') || 5;
 
   function updateGameBoardState() {
-    setBoardState({...boardState, boardState})
+    setBoardState({...boardState, ...boardState})
     localStorage.setItem('boardState', JSON.stringify(boardState))
   }
 
@@ -35,51 +38,65 @@ export default function Keyboard() {
   }
 
   async function handleKbClick(btn) {
+
+    boardState.tempRow = null
+
     if(btn === 'enter') {
       
       if(boardState.row < rows && boardState.col == cols) {
 
-        const db = getFirestore();
-        const gameDocRef = doc(db, "games", boardState.id)
-        const gameSnap = await getDoc(gameDocRef);
-    
-        if(gameSnap.exists()) {
+        setLoading(true)
+        const validWordCheck = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${boardState.matrix[boardState.row].join('')}`)
 
-            const userWordArray = boardState.matrix[boardState.row];
-            const solnWordArray = (gameSnap.data().word).toUpperCase().split('')
+        if(validWordCheck.status === 200) {
 
-            var winCounter = 0;
-            
-            userWordArray.forEach((v,i) => {
+          const db = getFirestore();
+          const gameDocRef = doc(db, "games", boardState.id)
+          const gameSnap = await getDoc(gameDocRef);
+      
+          if(gameSnap.exists()) {
 
-              if(solnWordArray.includes(v)) {
-                if(solnWordArray[i] == v) {
-                  boardState.solves[boardState.row][i] = 1
-                  boardState.keyset.correct.push(v.toLowerCase())
-                  winCounter++;
+              const userWordArray = boardState.matrix[boardState.row];
+              const solnWordArray = (gameSnap.data().word).toUpperCase().split('')
+  
+              var winCounter = 0;
+              
+              userWordArray.forEach((v,i) => {
+  
+                if(solnWordArray.includes(v)) {
+                  if(solnWordArray[i] == v) {
+                    boardState.solves[boardState.row][i] = LetterState.Correct
+                    boardState.keyset.correct.push(v.toLowerCase())
+                    winCounter++;
+                  } else {
+                    boardState.solves[boardState.row][i] = LetterState.Misplaced
+                    boardState.keyset.misplaced.push(v.toLowerCase())
+                  }
                 } else {
-                  boardState.solves[boardState.row][i] = 2
-                  boardState.keyset.misplaced.push(v.toLowerCase())
+                  boardState.solves[boardState.row][i] = LetterState.Wrong
+                  boardState.keyset.wrong.push(v.toLowerCase())
                 }
-              } else {
-                boardState.solves[boardState.row][i] = 3
-                boardState.keyset.wrong.push(v.toLowerCase())
+  
+              })
+  
+              if(winCounter == cols) {
+                boardState.state = GameStates.Won;
               }
-
-            })
-
-            if(winCounter == cols) {
-              boardState.state = 1;
-            }
-
-            if(boardState.row == rows - 1) {
-              boardState.state = 2;
-            }
-
-            boardState.row++;
-            boardState.col = 0
-            updateGameBoardState();
-    
+  
+              if(boardState.row == rows - 1) {
+                boardState.state = GameStates.Lost;
+              }
+  
+              boardState.row++;
+              boardState.col = 0
+              setLoading(false)
+              updateGameBoardState();
+      
+          }
+        } else {
+          boardState.tempRow = boardState.row
+          setLoading(false)
+          updateGameBoardState()
         }
 
       }
@@ -133,7 +150,7 @@ export default function Keyboard() {
         <div className="w-2"></div>
       </div>
       <div className="flex justify-evenly">
-        <button onClick={() => handleKbClick("enter")} style={{width: "3rem", backgroundColor: "#4B5563", color: "#eee", textTransform: "none"}}>Enter</button>
+        <button onClick={() => handleKbClick("enter")} style={{width: "3rem", backgroundColor: "#4B5563", color: "#eee", textTransform: "none"}}>{loading ? '...' : 'Enter'}</button>
         <button style={generateStyle("z")} onClick={() => handleKbClick("z")}>z</button>
         <button style={generateStyle("x")} onClick={() => handleKbClick("x")}>x</button>
         <button style={generateStyle("c")} onClick={() => handleKbClick("c")}>c</button>

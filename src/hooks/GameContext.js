@@ -34,11 +34,12 @@ export const GameProvider = (props) => {
       misplaced: [],
       wrong: []
     },
+    tempRow: null,
     state: 0,
   })
 
   return(
-    <GameContext.Provider value={{boardState, setBoardState, gameState: boardState.state}}>
+    <GameContext.Provider value={{boardState, setBoardState}}>
       {props.children}
     </GameContext.Provider>
   )

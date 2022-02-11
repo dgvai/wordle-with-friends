@@ -1,5 +1,5 @@
 import GameBody from '../components/GameBody';
-import Keyboard from '../components/Keyboard';
+import Controller from '../components/Controller';
 import Header from './../components/Header';
 import { useParams } from 'react-router-dom';
 import { useContext, useEffect} from 'react';
@@ -7,12 +7,13 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { GameContext } from '../hooks/GameContext';
 import WinBoard from '../components/WinBoard';
 import LoseBoard from '../components/LoseBoard';
+import { GameStates } from '../constants/games';
 
 export default function Game() {
 
   const {gameId} = useParams()
   const db = getFirestore();
-  const {boardState, setBoardState, gameState} = useContext(GameContext)
+  const {boardState, setBoardState} = useContext(GameContext)
 
   async function setGameData() {
     const gameDocRef = doc(db, "games", gameId)
@@ -36,11 +37,10 @@ export default function Game() {
     const prevBoardState = JSON.parse(localStorage.getItem('boardState'));
 
     if(prevBoardState) {
-      if(prevBoardState.id === gameId) {
+      if(prevBoardState.id == gameId) {
         setBoardState(prevBoardState);
       } else {
-        prevBoardState.id = gameId
-        setBoardState(prevBoardState)
+        setBoardState({...boardState, id: gameId})
       }
     } else {
       setBoardState({...boardState, id: gameId})
@@ -53,9 +53,9 @@ export default function Game() {
 
   function renderStatefulObject() {
     switch(boardState.state) {
-      case 1: return <WinBoard />
-      case 2: return <LoseBoard />
-      default: return <Keyboard />
+      case GameStates.Won: return <WinBoard />
+      case GameStates.Lost: return <LoseBoard />
+      default: return <Controller />
     }
   }
 
