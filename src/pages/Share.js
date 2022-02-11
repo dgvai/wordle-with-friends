@@ -26,7 +26,7 @@ export default function Share() {
       <div className="container mx-auto max-w-md h-screen flex flex-col">
         <Header/>
         <div className="flex flex-col justify-center flex-grow">
-          <img src="/images/success.svg" alt="Success Icon" class="w-64 mx-auto custom-animate-bounce"/>
+          <img src="/images/success.svg" alt="Success Icon" className="w-64 mx-auto custom-animate-bounce"/>
           <span className='text-2xl text-center mt-3 font-light text-gray-600'>The wordle has been created!</span>
           <span className='text-center font-light text-sm tracking-wider'>Challenge your friend!</span>
           <input id="link" type="text" value={gameLink} readOnly={true} onClick={handleClickToCopy}
