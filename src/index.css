@@ -77,3 +77,16 @@ body > #root {
     transform: translate3d(4px, 0, 0);
   }
 }
+
+.custom-animate-flip {
+  animation: flip 0.75s 1;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
