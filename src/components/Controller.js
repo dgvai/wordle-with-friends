@@ -85,12 +85,10 @@ export default function Keyboard() {
 
           if(winCounter == cols) {
             boardState.state = GameStates.Won;
-          }
-
-          if(boardState.row == rows - 1) {
+          } else if(boardState.row == rows - 1) {
             boardState.state = GameStates.Lost;
           }
-
+          
           boardState.row++;
           boardState.col = 0
           setLoading(false)
