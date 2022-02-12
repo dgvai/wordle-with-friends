@@ -38,7 +38,7 @@ export default function WinBoard() {
     }).join("\r\n").trim()
 
     const tries = soln.split("\n").length;
-    const lines = `Wordle with\nFriend  ${tries}/6\n`;
+    const lines = `Wordle with\nFriends ${tries}/6\n`;
 
     const solnInput = document.createElement('textarea')
     solnInput.value = lines+soln

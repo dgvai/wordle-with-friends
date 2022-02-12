@@ -1,70 +1,24 @@
-# Getting Started with Create React App
+# Wordle with Friends
+Author: Jalal Uddin ( [Github](https://github.com/dgvai) | [LinkedIn](https://linkedin.com/in/dgvai) | [Facebook](https://facebook.com/dgvai.hridoy) )  
+> To start, it's important to note that the basic five-letter guessing game underlying **Wordle** is not itself a completely original idea. The same basic gameplay was popularized by *Lingo*, a game show that dates back to the '80s in the US and other countries. The two-player pen-and-paper game *Jotto*, which goes back to 1955, would also be very familiar to Wordle players. [[1]](https://arstechnica.com/gaming/2022/01/wordle-and-ip-law-what-happens-when-a-hot-game-gets-cloned/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+In this *Wordle* game, instead of daily word challenge, here you can play this game with your friends by setting the word by yourself. The game play is very simple. 
 
-In the project directory, you can run:
+This *Wordle* gives players six chances to guess the word selected by your friend. If you have the right letter in the right spot, it shows up green. A correct letter in the wrong spot shows up yellow. A letter that isn't in the word in any spot shows up gray. 
 
-### `npm start`
+You can enter a total of six words, meaning you can enter five burner words from which you can learn hints about the letters and their placements. Then you get one chance to put those hints to use [[2]](https://www.cnet.com/how-to/wordle-explained-everything-you-need-to-know-about-the-viral-word-game/).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Application Information
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This application is built using the popular **JavaScript** framework, [ReactJS](https://reactjs.org/). Also, several [npm](https://www.npmjs.com/) packages have been used to built the application. The UI styles uses [Tailwind CSS](https://tailwindcss.com) framework. All the other notable informations are listed bellow:
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [Create React App](https://create-react-app.dev)
+- [React Router DOM v6](https://reactrouter.com)
+- [React Context API](https://reactjs.org/docs/context.html)
+- [Firebase](https://firebase.google.com/)
+- [Firestore DB](https://firebase.google.com/docs/firestore)
+- [Secure Web Storage](https://www.npmjs.com/package/secure-web-storage)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Sweetalert 2](https://sweetalert2.github.io/)
