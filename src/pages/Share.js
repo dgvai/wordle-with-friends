@@ -5,7 +5,7 @@ export default function Share() {
 
   const {state} = useLocation();
   const {gameId} = state;
-  const gameLink = 'https://wordle-with-friend.web.app/'+gameId;
+  const gameLink = process.env.REACT_APP_SITE_URL+'/'+gameId;
 
   function handleClickToCopy() {
     var link = document.querySelector('#link');
