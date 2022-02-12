@@ -8,6 +8,7 @@ import { GameContext } from '../hooks/GameContext';
 import WinBoard from '../components/WinBoard';
 import LoseBoard from '../components/LoseBoard';
 import { GameStates } from '../constants/games';
+import { secureStorage } from '../classes/SecureStorage';
 
 export default function Game() {
 
@@ -25,15 +26,19 @@ export default function Game() {
         localStorage.setItem('currentGameRows', gameSnap.data().tries)
         localStorage.setItem('currentGameCols', gameSnap.data().length)
         localStorage.setItem('currentGameHint', gameSnap.data().hint)
+        secureStorage.setItem('currentGameSoln', gameSnap.data().word)
 
     } else {
       console.log('No game found')
     }
   }
 
-  useEffect(() => {
-
+  function loadNewGameData() {
+    setBoardState({...boardState, id: gameId})
     setGameData()
+  }
+
+  useEffect(() => {
 
     const prevBoardState = JSON.parse(localStorage.getItem('boardState'));
 
@@ -41,10 +46,10 @@ export default function Game() {
       if(prevBoardState.id == gameId) {
         setBoardState(prevBoardState);
       } else {
-        setBoardState({...boardState, id: gameId})
+        loadNewGameData()
       }
     } else {
-      setBoardState({...boardState, id: gameId})
+      loadNewGameData()
     }
   }, []);
 

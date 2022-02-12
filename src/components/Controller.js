@@ -1,8 +1,8 @@
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useContext, useState } from 'react';
 import { Colors } from '../constants/colors';
 import { GameContext } from '../hooks/GameContext';
 import { GameStates, LetterState } from '../constants/games';
+import { secureStorage } from '../classes/SecureStorage';
 
 export default function Keyboard() {
 
@@ -12,6 +12,8 @@ export default function Keyboard() {
 
   const rows = localStorage.getItem('currentGameRows') || 6;
   const cols = localStorage.getItem('currentGameCols') || 5;
+
+  const word = secureStorage.getItem('currentGameSoln')
 
   function updateGameBoardState() {
     setBoardState({...boardState, ...boardState})
@@ -37,62 +39,63 @@ export default function Keyboard() {
     }
   }
 
+  async function checkWordValidity(word) {
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+    return response.status === 200;
+  }
+
+  function compareWords() {
+
+    const userWordArray = boardState.matrix[boardState.row];
+    const solnWordArray = (word).toUpperCase().split('')
+    var winCounter = 0;
+          
+    userWordArray.forEach((v,i) => {
+
+      if(solnWordArray.includes(v)) {
+        if(solnWordArray[i] == v) {
+          boardState.solves[boardState.row][i] = LetterState.Correct
+          boardState.keyset.correct.push(v.toLowerCase())
+          winCounter++;
+        } else {
+          boardState.solves[boardState.row][i] = LetterState.Misplaced
+          boardState.keyset.misplaced.push(v.toLowerCase())
+        }
+      } else {
+        boardState.solves[boardState.row][i] = LetterState.Wrong
+        boardState.keyset.wrong.push(v.toLowerCase())
+      }
+    })
+
+    return winCounter;
+  }
+
   async function handleKbClick(btn) {
 
     boardState.tempRow = null
 
     if(btn === 'enter') {
-      
       if(boardState.row < rows && boardState.col == cols) {
 
         setLoading(true)
-        const validWordCheck = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${boardState.matrix[boardState.row].join('')}`)
+        const validWord = await checkWordValidity(boardState.matrix[boardState.row].join(''))
 
-        if(validWordCheck.status === 200) {
+        if(validWord) {
+          var winCounter = compareWords();
 
-          const db = getFirestore();
-          const gameDocRef = doc(db, "games", boardState.id)
-          const gameSnap = await getDoc(gameDocRef);
-      
-          if(gameSnap.exists()) {
-
-              const userWordArray = boardState.matrix[boardState.row];
-              const solnWordArray = (gameSnap.data().word).toUpperCase().split('')
-  
-              var winCounter = 0;
-              
-              userWordArray.forEach((v,i) => {
-  
-                if(solnWordArray.includes(v)) {
-                  if(solnWordArray[i] == v) {
-                    boardState.solves[boardState.row][i] = LetterState.Correct
-                    boardState.keyset.correct.push(v.toLowerCase())
-                    winCounter++;
-                  } else {
-                    boardState.solves[boardState.row][i] = LetterState.Misplaced
-                    boardState.keyset.misplaced.push(v.toLowerCase())
-                  }
-                } else {
-                  boardState.solves[boardState.row][i] = LetterState.Wrong
-                  boardState.keyset.wrong.push(v.toLowerCase())
-                }
-  
-              })
-  
-              if(winCounter == cols) {
-                boardState.state = GameStates.Won;
-              }
-  
-              if(boardState.row == rows - 1) {
-                boardState.state = GameStates.Lost;
-              }
-  
-              boardState.row++;
-              boardState.col = 0
-              setLoading(false)
-              updateGameBoardState();
-      
+          if(winCounter == cols) {
+            boardState.state = GameStates.Won;
           }
+
+          if(boardState.row == rows - 1) {
+            boardState.state = GameStates.Lost;
+          }
+
+          boardState.row++;
+          boardState.col = 0
+          setLoading(false)
+          updateGameBoardState();
+
         } else {
           boardState.tempRow = boardState.row
           setLoading(false)
