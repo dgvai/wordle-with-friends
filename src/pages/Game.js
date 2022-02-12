@@ -24,6 +24,7 @@ export default function Game() {
         localStorage.setItem('currentGameId', gameId)
         localStorage.setItem('currentGameRows', gameSnap.data().tries)
         localStorage.setItem('currentGameCols', gameSnap.data().length)
+        localStorage.setItem('currentGameHint', gameSnap.data().hint)
 
     } else {
       console.log('No game found')
@@ -62,7 +63,7 @@ export default function Game() {
   return (
 
     <div className="container mx-auto max-w-md h-screen flex flex-col overflow-hidden">
-      <Header/>
+      <Header gameScreen={true}/>
       <GameBody />
       {renderStatefulObject()}
     </div>

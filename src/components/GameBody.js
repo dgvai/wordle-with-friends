@@ -27,7 +27,7 @@ export default function GameBody() {
   }
 
   function getTileAnimation(row) {
-    return (boardState.tempRow && boardState.tempRow == row) ? 'shake 0.5s 1' : '';
+    return (boardState.tempRow != null && boardState.tempRow == row) ? 'shake 0.5s 1' : '';
   }
 
   function generateStyle(row,col) {
