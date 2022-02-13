@@ -1,6 +1,7 @@
 import { getFirestore, collection, addDoc } from "firebase/firestore"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { checkWordValidity } from "../classes/WordValidity";
 
 export default function CreateForm() {
 
@@ -29,34 +30,26 @@ export default function CreateForm() {
       return;
     }
 
+    const validWord = checkWordValidity(word)
+    
+    if(!validWord) {
+      setInvalid({is: true, text: 'Invalid english word!'});
+      return;
+    }
+
     try {
-      setLoading(true);
-      const validWordCheck = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-      
-      if(validWordCheck.status === 404) {
-        setInvalid({is: true, text: 'Invalid english word!'});
-        setLoading(false);
-        return;
-      }
-
+      setLoading(true)
       const db = getFirestore();
+      const docRef = await addDoc(collection(db, 'games'), {
+        word, name, hint, length, tries, created_at
+      })
 
-      try {
-        const docRef = await addDoc(collection(db, 'games'), {
-          word, name, hint, length, tries, created_at
-        })
-
-        if(docRef.id) {
-          navigate('/share', {state : {gameId: docRef.id}})
-        }
-        
-      } catch(e) {
-        console.log(e, 'Unexpected Exception from Firestore')
+      if(docRef.id) {
+        navigate('/share', {state : {gameId: docRef.id}})
       }
-
-
+      
     } catch(e) {
-      console.log(e, 'Unexpected Exception')
+      console.log(e, 'Unexpected Exception from Firestore')
     }
   }
 

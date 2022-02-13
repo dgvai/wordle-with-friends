@@ -5,6 +5,7 @@ import { GameStates } from '../constants/games';
 import { secureStorage } from '../classes/SecureStorage';
 import { compareWords, PressedBackspace, PressedKey, updateGameBoardState } from '../classes/WordleEngine';
 import { EnterPressed } from './../classes/WordleEngine';
+import { checkWordValidity } from './../classes/WordValidity';
 
 export default function Keyboard() {
 
@@ -34,12 +35,7 @@ export default function Keyboard() {
     }
   }
 
-  async function checkWordValidity(word) {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-    return response.status === 200;
-  }
-
-  async function handleKbClick(btn) {
+  function handleKbClick(btn) {
 
     boardState.tempRow = null
 
@@ -48,7 +44,7 @@ export default function Keyboard() {
       if(boardState.row < rows && boardState.col == cols) {
 
         setLoading(true)
-        const validWord = await checkWordValidity(boardState.matrix[boardState.row].join(''))
+        const validWord = checkWordValidity(boardState.matrix[boardState.row].join(''))
 
         if(validWord) {
 
