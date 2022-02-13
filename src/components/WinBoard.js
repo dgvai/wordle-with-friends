@@ -1,61 +1,24 @@
-import mojs from '@mojs/core'
 import { useContext, useEffect } from 'react';
-import { LetterState } from '../constants/games';
+import { MapToTextTiles } from '../classes/AnswerMapper';
+import { CopyToClipboard } from '../classes/ClipboardCopier';
 import { GameContext } from '../hooks/GameContext';
+import { burst } from '../utils/MojsBurst';
 
 export default function WinBoard() {
 
   const {boardState} = useContext(GameContext)
   const name = localStorage.getItem('currentGameCreator')
 
-  const burst = new mojs.Burst({
-    radius: {0:150},
-    count: 15,
-    opacity:  { 1: 0 },
-    children: {
-      shape: 'polygon',
-      fill: { 'red' : 'yellow' },
-      radius: 'rand(10,30)',
-      rotate: { 360: 0 },
-      duration: 2000
-    }
-  });
-
   useEffect(() => {
     burst.play()
   }, [])
 
   function handleCopy() {
-    
-    const soln = boardState.solves.map(v => {
-      return v.map(w => {
-        switch(w) {
-            case LetterState.Correct : return '🟩';
-            case LetterState.Misplaced : return '🟨';
-            case LetterState.Wrong : return '⬛';
-            default: return ''
-        }
-      }).join('')
-    }).join("\r\n").trim()
 
-    const tries = soln.split("\n").length;
-    const lines = `${name}'s wordle\nWWF         ${tries}/6\n\n`;
+    const tiles = new MapToTextTiles(boardState.solves)
+    tiles.AddTitle(name)
+    CopyToClipboard(tiles.text)
 
-    const solnInput = document.createElement('textarea')
-    solnInput.value = lines+soln
-    document.body.appendChild(solnInput)
-    solnInput.select()
-    document.execCommand('copy')
-    document.body.removeChild(solnInput)
-    burst.replay()
-    console.log('copied')
-
-    var copyBtn = document.querySelector('#copyBtn')
-    copyBtn.innerHTML = 'Copied!';
-
-    window.setTimeout(function() {
-      copyBtn.innerHTML = "Copy & Share"
-    }, 2000)
   }
 
   return (
