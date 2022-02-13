@@ -25,6 +25,7 @@ export default function Game() {
         localStorage.setItem('currentGameId', gameId)
         localStorage.setItem('currentGameRows', gameSnap.data().tries)
         localStorage.setItem('currentGameCols', gameSnap.data().length)
+        localStorage.setItem('currentGameCreator', gameSnap.data().name ?? 'Anonymous')
         localStorage.setItem('currentGameHint', gameSnap.data().hint)
         secureStorage.setItem('currentGameSoln', gameSnap.data().word)
 

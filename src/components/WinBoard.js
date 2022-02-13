@@ -6,6 +6,7 @@ import { GameContext } from '../hooks/GameContext';
 export default function WinBoard() {
 
   const {boardState} = useContext(GameContext)
+  const name = localStorage.getItem('currentGameCreator')
 
   const burst = new mojs.Burst({
     radius: {0:150},
@@ -38,7 +39,7 @@ export default function WinBoard() {
     }).join("\r\n").trim()
 
     const tries = soln.split("\n").length;
-    const lines = `Wordle with\nFriends ${tries}/6\n`;
+    const lines = `${name}'s wordle\nWWF         ${tries}/6\n\n`;
 
     const solnInput = document.createElement('textarea')
     solnInput.value = lines+soln
