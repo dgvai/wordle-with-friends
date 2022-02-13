@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react';
 import { Colors } from '../constants/colors';
 import { GameContext } from '../hooks/GameContext';
-import { GameStates, LetterState } from '../constants/games';
+import { GameStates } from '../constants/games';
 import { secureStorage } from '../classes/SecureStorage';
+import { compareWords, PressedBackspace, PressedKey, updateGameBoardState } from '../classes/WordleEngine';
+import { EnterPressed } from './../classes/WordleEngine';
 
 export default function Keyboard() {
 
@@ -12,13 +14,6 @@ export default function Keyboard() {
 
   const rows = localStorage.getItem('currentGameRows') || 6;
   const cols = localStorage.getItem('currentGameCols') || 5;
-
-  const word = secureStorage.getItem('currentGameSoln')
-
-  function updateGameBoardState() {
-    setBoardState({...boardState, ...boardState})
-    localStorage.setItem('boardState', JSON.stringify(boardState))
-  }
 
   function generateStyle(key) {
     if(boardState.keyset.correct.includes(key)) {
@@ -44,81 +39,37 @@ export default function Keyboard() {
     return response.status === 200;
   }
 
-  function compareWords() {
-
-    const userWordArray = boardState.matrix[boardState.row];
-    const solnWordArray = (word).toUpperCase().split('')
-    var winCounter = 0;
-          
-    userWordArray.forEach((v,i) => {
-
-      if(solnWordArray.includes(v)) {
-        if(solnWordArray[i] == v) {
-          boardState.solves[boardState.row][i] = LetterState.Correct
-          boardState.keyset.correct.push(v.toLowerCase())
-          winCounter++;
-        } else {
-          boardState.solves[boardState.row][i] = LetterState.Misplaced
-          boardState.keyset.misplaced.push(v.toLowerCase())
-        }
-      } else {
-        boardState.solves[boardState.row][i] = LetterState.Wrong
-        boardState.keyset.wrong.push(v.toLowerCase())
-      }
-    })
-
-    return winCounter;
-  }
-
   async function handleKbClick(btn) {
 
     boardState.tempRow = null
 
     if(btn === 'enter') {
+      
       if(boardState.row < rows && boardState.col == cols) {
 
         setLoading(true)
         const validWord = await checkWordValidity(boardState.matrix[boardState.row].join(''))
 
         if(validWord) {
-          var winCounter = compareWords();
 
-          if(winCounter == cols) {
-            boardState.state = GameStates.Won;
-          } else if(boardState.row == rows - 1) {
-            boardState.state = GameStates.Lost;
-          }
-          
-          boardState.row++;
-          boardState.col = 0
+          EnterPressed(boardState, setBoardState)
           setLoading(false)
-          updateGameBoardState();
 
         } else {
           boardState.tempRow = boardState.row
           setLoading(false)
-          updateGameBoardState()
+          updateGameBoardState(boardState, setBoardState)
         }
 
       }
 
     } else if(btn === 'backsp') {
 
-      if(boardState.col > 0) {
-
-        boardState.matrix[boardState.row][boardState.col - 1] = ''
-        boardState.col--;
-        updateGameBoardState()
-      }
+      PressedBackspace(boardState, setBoardState)
 
     } else {
 
-      if(boardState.col < cols) {
-
-        boardState.matrix[boardState.row][boardState.col] = btn.toUpperCase()
-        boardState.col++;
-        updateGameBoardState()
-      }
+      PressedKey(btn, boardState, setBoardState)
 
     }
   }
