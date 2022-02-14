@@ -1,4 +1,4 @@
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { doc, FieldValue, getDoc, getFirestore, increment, updateDoc } from 'firebase/firestore';
 import { Colors } from '../constants/colors';
 import { GameStates, LetterState } from '../constants/games';
 import { secureStorage } from './SecureStorage';
@@ -18,6 +18,12 @@ function initializeMatrix(rows, cols) {
   }
 
   return {grid, solv};
+}
+
+async function updateGameData(gameId) {
+  const db = getFirestore();
+  const gameDocRef = doc(db, "games", gameId)
+  await updateDoc(gameDocRef, {solves:  increment(1)});
 }
 
 export async function loadNewGameData(boardState, setBoardState, gameId) {
@@ -108,6 +114,7 @@ export function EnterPressed(boardState, setBoardState) {
 
   if(winCounter == cols) {
     boardState.state = GameStates.Won;
+    updateGameData(boardState.id)
   } else if(boardState.row == rows - 1) {
     boardState.state = GameStates.Lost;
   }

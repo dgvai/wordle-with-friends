@@ -18,7 +18,7 @@ export default function GameBody() {
   }
 
   return (
-    <div className="w-full text-center flex justify-center">
+    <div className="w-full text-center flex justify-center" style={{fontFamily:'Arial'}}>
       <div className="flex flex-col w-80 h-96 justify-evenly">
           {
             grid.map((row, i) => (

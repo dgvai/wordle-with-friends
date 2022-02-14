@@ -17,7 +17,7 @@ export default function Header({gameScreen = false}) {
       </div>
       <Link to="/" className="flex flex-col w-10/12 text-center uppercase">
         <span className="text-4xl font-bold text-green-400">Wordle</span>
-        <span className="font-light tracking-widest">with friends</span>
+        <span className="font-light tracking-widest leading-3 mb-2">with friends</span>
       </Link>
       <div className="w-2/12 flex justify-center align-middle">
         {gameScreen && <img onClick={() => showHint()} className="rounded-full border-2 border-yellow-400 m-auto p-1 w-8 h-8" src="/images/hint.svg" width="25px" alt="Show Hint" />}

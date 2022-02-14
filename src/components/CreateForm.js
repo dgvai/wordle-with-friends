@@ -41,7 +41,7 @@ export default function CreateForm() {
       setLoading(true)
       const db = getFirestore();
       const docRef = await addDoc(collection(db, 'games'), {
-        word, name, hint, length: word.length, tries, created_at
+        word, name, hint, length: word.length, tries, created_at, solves: 0
       })
 
       if(docRef.id) {
