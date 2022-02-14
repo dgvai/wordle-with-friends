@@ -2,6 +2,7 @@ import { doc, FieldValue, getDoc, getFirestore, increment, updateDoc } from 'fir
 import { Colors } from '../constants/colors';
 import { GameStates, LetterState } from '../constants/games';
 import { secureStorage } from './SecureStorage';
+import { getGuessStatus, getKeyboardMapping } from './Wordle';
 
 function initializeMatrix(rows, cols) {
 
@@ -63,32 +64,6 @@ export function updateGameBoardState(boardState, setBoardState) {
   localStorage.setItem('boardState', JSON.stringify(boardState))
 }
 
-export function compareWords(word, boardState) {
-
-  const userWordArray = boardState.matrix[boardState.row];
-  const solnWordArray = (word).toUpperCase().split('')
-  var winCounter = 0;
-        
-  userWordArray.forEach((v,i) => {
-
-    if(solnWordArray.includes(v)) {
-      if(solnWordArray[i] == v) {
-        boardState.solves[boardState.row][i] = LetterState.Correct
-        boardState.keyset.correct.push(v.toLowerCase())
-        winCounter++;
-      } else {
-        boardState.solves[boardState.row][i] = LetterState.Misplaced
-        boardState.keyset.misplaced.push(v.toLowerCase())
-      }
-    } else {
-      boardState.solves[boardState.row][i] = LetterState.Wrong
-      boardState.keyset.wrong.push(v.toLowerCase())
-    }
-  })
-
-  return winCounter;
-}
-
 export function PressedBackspace(boardState, setBoardState) {
   if(boardState.col > 0) {
 
@@ -116,7 +91,14 @@ export function EnterPressed(boardState, setBoardState) {
   const cols = localStorage.getItem('currentGameCols') || 5;
   const word = secureStorage.getItem('currentGameSoln')
 
-  var winCounter = compareWords(word, boardState);
+  const guessWordArray = boardState.matrix[boardState.row];
+  const allGuessesArray = boardState.matrix.map(v => v.join(''))
+
+  const keyMap = getKeyboardMapping(allGuessesArray, word.toUpperCase()).keyset
+
+  const rowMap = getGuessStatus(guessWordArray.join(''), word.toUpperCase())
+
+  var winCounter = rowMap.filter(x => x == 1).length;
 
   if(winCounter == cols) {
     boardState.state = GameStates.Won;
@@ -124,8 +106,9 @@ export function EnterPressed(boardState, setBoardState) {
   } else if(boardState.row == rows - 1) {
     boardState.state = GameStates.Lost;
   }
-  
-  boardState.row++;
+  boardState.solves[boardState.row] = rowMap
+  boardState.keyset = keyMap
+  boardState.row++
   boardState.col = 0
   updateGameBoardState(boardState, setBoardState);
 }

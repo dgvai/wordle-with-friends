@@ -2,24 +2,25 @@ import { getDocs, getFirestore, collection, limit, orderBy, query } from 'fireba
 import { useEffect, useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import ExampleTiles from './ExampleTiles'
+import {version} from './../../package.json'
 
 export default function MainMenu() {
 
   const navigate = useNavigate()
   const [recentGames, pushGames] = useState([])
 
-  useEffect(async () => {
+  // useEffect(async () => {
     
-    const db = getFirestore();
-    const q = query(collection(db, "games"), orderBy("created_at", "desc"), limit(5));
+  //   const db = getFirestore();
+  //   const q = query(collection(db, "games"), orderBy("created_at", "desc"), limit(5));
 
-    const querySnapshot = await getDocs(q);
+  //   const querySnapshot = await getDocs(q);
 
-    querySnapshot.forEach((doc) => {
-      pushGames(recentGames => [...recentGames, {id: doc.id, data: doc.data()}])
-    });
+  //   querySnapshot.forEach((doc) => {
+  //     pushGames(recentGames => [...recentGames, {id: doc.id, data: doc.data()}])
+  //   });
 
-  },[])
+  // },[])
 
   return (
     <div className="flex flex-col">
@@ -49,6 +50,9 @@ export default function MainMenu() {
         This game <b>Wordle</b> was popularised by <i>Lingo</i>, a game show. Recently a daily wordle game created by <i>Josh Wardle</i> has gone viral. The gameplay of this game is similar, however, here you set 
         the word and challenge your friends to find out the word! 
         <br/> In addition to the original game, you can set hints (optional).
+      </p>
+      <p className="m-2 p-4 text-justify bg-gray-800 rounded-lg text-gray-200 text-xs">
+        v2.0.1 &bull; Source Code on <a className="text-green-400" href="https://github.com/dgvai/wordle-with-friends" rel="noreferrer" target="_blank">Github</a>
       </p>
     </div>
   )
