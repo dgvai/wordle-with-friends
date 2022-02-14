@@ -42,9 +42,15 @@ export async function loadNewGameData(boardState, setBoardState, gameId) {
       secureStorage.setItem('currentGameSoln', gameSnap.data().word)
 
       const {grid, solv} = initializeMatrix(gameSnap.data().tries, gameSnap.data().length)
+
       boardState.id = gameId
+      boardState.row = 0
+      boardState.col = 0
       boardState.matrix = grid
       boardState.solves = solv
+      boardState.keyset = {correct: [], misplaced: [],wrong: []}
+      boardState.tempRow = null
+      boardState.state = 0
       setBoardState({...boardState, ...boardState})
 
   } else {
