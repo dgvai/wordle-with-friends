@@ -9,18 +9,18 @@ export default function MainMenu() {
   const navigate = useNavigate()
   const [recentGames, pushGames] = useState([])
 
-  // useEffect(async () => {
+  useEffect(async () => {
     
-  //   const db = getFirestore();
-  //   const q = query(collection(db, "games"), orderBy("created_at", "desc"), limit(5));
+    const db = getFirestore();
+    const q = query(collection(db, "games"), orderBy("created_at", "desc"), limit(5));
 
-  //   const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q);
 
-  //   querySnapshot.forEach((doc) => {
-  //     pushGames(recentGames => [...recentGames, {id: doc.id, data: doc.data()}])
-  //   });
+    querySnapshot.forEach((doc) => {
+      pushGames(recentGames => [...recentGames, {id: doc.id, data: doc.data()}])
+    });
 
-  // },[])
+  },[])
 
   return (
     <div className="flex flex-col">
