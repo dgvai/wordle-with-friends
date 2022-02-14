@@ -8,23 +8,23 @@ import WinBoard from '../components/WinBoard';
 import LoseBoard from '../components/LoseBoard';
 import { GameStates } from '../constants/games';
 import { loadNewGameData } from '../classes/WordleEngine';
+import LoadScreen from '../components/LoadScreen';
 
 export default function Game() {
 
   const {gameId} = useParams()
+  const prevBoardState = JSON.parse(localStorage.getItem('boardState'));
   const {boardState, setBoardState} = useContext(GameContext)
 
-  useEffect(() => {
-    const prevBoardState = JSON.parse(localStorage.getItem('boardState'));
-
+  useEffect(async () => {
     if(prevBoardState) {
       if(prevBoardState.id == gameId) {
         setBoardState(prevBoardState);
       } else {
-        loadNewGameData(boardState, setBoardState, gameId)
+        await loadNewGameData(boardState, setBoardState, gameId)
       }
     } else {
-      loadNewGameData(boardState, setBoardState, gameId)
+      await loadNewGameData(boardState, setBoardState, gameId)
     }
   }, []);
 
@@ -44,7 +44,7 @@ export default function Game() {
 
     <div className="container mx-auto max-w-md h-screen flex flex-col overflow-hidden">
       <Header gameScreen={true}/>
-      <GameBody />
+      {boardState.id ? <GameBody /> : <LoadScreen/>}
       {renderStatefulObject()}
     </div>
   )

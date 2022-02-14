@@ -1,9 +1,7 @@
 import { useContext, useState } from 'react';
 import { Colors } from '../constants/colors';
 import { GameContext } from '../hooks/GameContext';
-import { GameStates } from '../constants/games';
-import { secureStorage } from '../classes/SecureStorage';
-import { compareWords, PressedBackspace, PressedKey, updateGameBoardState } from '../classes/WordleEngine';
+import { PressedBackspace, PressedKey, updateGameBoardState } from '../classes/WordleEngine';
 import { EnterPressed } from './../classes/WordleEngine';
 import { checkWordValidity } from './../classes/WordValidity';
 

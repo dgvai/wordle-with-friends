@@ -25,7 +25,7 @@ export default function GameBody() {
               <div className="flex flex-row justify-evenly align-middle mt-3" key={i}>
                 {
                   row.map((col, j) => (
-                    <input key={j} value={grid[i][j]} type="text" disabled={true} style={generateStyle(i,j)} className="w-12 h-12 text-4xl font-bold text-center transition-all" />
+                    <input key={j} value={grid[i][j]} type="text" disabled={true} style={generateStyle(i,j)} className="rounded w-12 h-12 text-4xl font-bold text-center transition-all" />
                   ))
                 }
               </div>

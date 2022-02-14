@@ -13,14 +13,14 @@ export default function CreateForm() {
   const [loading, setLoading] = useState(false);
   const [invalid, setInvalid] = useState({is: false, text: ''});
   const created_at = (new Date()).toISOString()
-  const length = 5;
+  const lengths = [5, 6];
   const tries = 6;
   
   async function handleCreateWord(event) {
     
     event.preventDefault();
 
-    if(word.length != length) {
+    if(!lengths.includes(word.length)) {
       setInvalid({is: true, text: 'Invalid word length!'})
       return;
     }
@@ -41,7 +41,7 @@ export default function CreateForm() {
       setLoading(true)
       const db = getFirestore();
       const docRef = await addDoc(collection(db, 'games'), {
-        word, name, hint, length, tries, created_at
+        word, name, hint, length: word.length, tries, created_at
       })
 
       if(docRef.id) {
@@ -58,7 +58,7 @@ export default function CreateForm() {
       <div className="m-2 p-4 text-justify bg-gray-100 rounded-lg text-gray-700 text-xs">
         <b>Rules</b>
         <ul>
-          <li> &bull; English words.</li>
+          <li> &bull; English words 5/6 letters.</li>
           <li> &bull; Dictionary valid.</li>
         </ul>
       </div>
@@ -67,21 +67,24 @@ export default function CreateForm() {
           {invalid.text}
         </p>
       }
-      <form onSubmit={handleCreateWord} className="flex flex-col">
+      <form onSubmit={handleCreateWord} className="flex flex-col m-1 p-2">
 
-        <label className="mx-3 mb-1 p-1 text-gray-400 uppercase tracking-wider font-light">Enter word</label>
-        <input id="word" type="text" maxLength="5" value={word} onChange={e => setWord(e.target.value)}
-          className="mb-3 text-green-400 font-extrabold rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 mx-3 text-2xl uppercase text-center" 
+        <label className="px-1 text-gray-400 uppercase tracking-wider font-light">Enter word</label>
+        <label className="pl-1 mb-2 text-gray-400 font-light text-xs">5 or 6 letters</label>
+        <input id="word" type="text" minLength="5" maxLength="6" value={word} onChange={e => setWord(e.target.value)}
+          className="mb-3 text-green-400 font-extrabold rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 text-2xl uppercase text-center" 
         />
 
-        <label className="mx-3 mb-1 p-1 text-gray-400 uppercase tracking-wider font-light">Your Name (Short)</label>
+        <label className="px-1 text-gray-400 uppercase tracking-wider font-light">Your Name</label>
+        <label className="pl-1 mb-2 text-gray-400 font-light text-xs">nickname</label>
         <input id="name" type="text" maxLength={12} value={name} onChange={e => setName(e.target.value)}
-          className="mb-3 text-gray-600 rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 mx-3 text-2xl" 
+          className="mb-3 text-gray-600 rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 text-2xl" 
         />
 
-        <label className="mx-3 mb-1 p-1 text-gray-400 uppercase tracking-wider font-light">Hints (optional)</label>
+        <label className="px-1 text-gray-400 uppercase tracking-wider font-light">Hints</label>
+        <label className="pl-1 mb-2 text-gray-400 font-light text-xs">{word.length == 6 ? '(Better to provide in hard mode)' : '(optional)'}</label>
         <input id="hint" type="text" value={hint} onChange={e => setHint(e.target.value)}
-          className="mb-3 text-gray-600 rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 mx-3 text-2xl" 
+          className="mb-3 text-gray-600 rounded-lg focus:shadow-xl border-green-400 border-2 bg-gray-100 p-2 text-2xl" 
         />
 
         <button type="submit" disabled={loading} className={"rounded-lg bg-green-400 w-48 text-2xl p-4 text-white font-medium uppercase mx-auto my-3"}>

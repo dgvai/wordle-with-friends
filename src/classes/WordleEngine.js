@@ -3,7 +3,24 @@ import { Colors } from '../constants/colors';
 import { GameStates, LetterState } from '../constants/games';
 import { secureStorage } from './SecureStorage';
 
-export async function setGameData(gameId) {
+function initializeMatrix(rows, cols) {
+
+  const grid = [];
+  const solv = [];
+
+  for(var i = 0; i < rows; i++){
+    grid.push([])
+    solv.push([])
+    for(var j = 0; j < cols; j++) {
+      grid[i].push('')
+      solv[i].push('')
+    }
+  }
+
+  return {grid, solv};
+}
+
+export async function loadNewGameData(boardState, setBoardState, gameId) {
   
   const db = getFirestore();
   const gameDocRef = doc(db, "games", gameId)
@@ -18,14 +35,15 @@ export async function setGameData(gameId) {
       localStorage.setItem('currentGameHint', gameSnap.data().hint)
       secureStorage.setItem('currentGameSoln', gameSnap.data().word)
 
+      const {grid, solv} = initializeMatrix(gameSnap.data().tries, gameSnap.data().length)
+      boardState.id = gameId
+      boardState.matrix = grid
+      boardState.solves = solv
+      setBoardState({...boardState, ...boardState})
+
   } else {
     console.log('No game found')
   }
-}
-
-export function loadNewGameData(boardState, setBoardState, gameId) {
-  setBoardState({...boardState, id: gameId})
-  setGameData(gameId)
 }
 
 export function updateGameBoardState(boardState, setBoardState) {
