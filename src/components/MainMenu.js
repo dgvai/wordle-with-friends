@@ -1,19 +1,21 @@
-import { getDocs, getFirestore, collection, limit, orderBy, query } from 'firebase/firestore'
+import { getDocs, getFirestore, collection, limit, orderBy, query, getCountFromServer } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import ExampleTiles from './ExampleTiles'
-import {version} from './../../package.json'
 
 export default function MainMenu() {
 
   const navigate = useNavigate()
   const [recentGames, pushGames] = useState([])
+  const [totalGames, setTotalGames] = useState(0)
 
   useEffect(async () => {
     
     const db = getFirestore();
-    const q = query(collection(db, "games"), orderBy("created_at", "desc"), limit(5));
-
+    const games = collection(db, "games");
+    const q = query(games, orderBy("created_at", "desc"), limit(5));
+    const total = await getCountFromServer(games);
+    setTotalGames(total.data().count);
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
@@ -46,13 +48,14 @@ export default function MainMenu() {
           </div>
         ))}
       </div>
+      <p className="m-2 p-4 bg-gray-100 rounded-lg text-gray-700 text-xs uppercase">Total Challenges: <b>{totalGames}</b></p>
       <p className="m-2 p-4 text-justify bg-gray-100 rounded-lg text-gray-700 text-xs">
         This game <b>Wordle</b> was popularised by <i>Lingo</i>, a game show. Recently a daily wordle game created by <i>Josh Wardle</i> has gone viral. The gameplay of this game is similar, however, here you set 
         the word and challenge your friends to find out the word! 
         <br/> In addition to the original game, you can set hints (optional).
       </p>
       <p className="m-2 p-4 text-justify bg-gray-800 rounded-lg text-gray-200 text-xs">
-        v2.0.1 &bull; Source Code on <a className="text-green-400" href="https://github.com/dgvai/wordle-with-friends" rel="noreferrer" target="_blank">Github</a>
+        v2.0.2 &bull; Source Code on <a className="text-green-400" href="https://github.com/dgvai/wordle-with-friends" rel="noreferrer" target="_blank">Github</a>
       </p>
     </div>
   )

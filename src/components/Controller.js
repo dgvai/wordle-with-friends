@@ -69,7 +69,7 @@ export default function Keyboard() {
   }
 
   return (
-    <div id="kb" className="flex flex-col w-full justify-evenly flex-grow" style={{fontFamily:'Arial'}}>
+    <div id="kb" className="flex flex-col w-full justify-end gap-2 flex-grow mb-5" style={{fontFamily:'Arial'}}>
       <div className="flex justify-evenly">
         <button style={generateStyle("q")} onClick={() => handleKbClick("q")}>q</button>
         <button style={generateStyle("w")} onClick={() => handleKbClick("w")}>w</button>
